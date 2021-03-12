@@ -1,6 +1,8 @@
 ﻿using ApplicationCore.Interface;
 using ApplicationCore.Model;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ApplicationCore.Services
 {
@@ -14,16 +16,27 @@ namespace ApplicationCore.Services
         }
         public IEnumerable<Category> GetAllCategory()
         {
-            var categories = _repository.ListAll("spGetAllCategory");
+            List<Category> categories = new List<Category>();
 
-            if(categories==null)
+            try
             {
+                categories = _repository.ListAll("spGetAllCategory").ToList();
+
+                if (categories == null)
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                //We can write exception in logger file.
                 return null;
             }
 
             return categories;
 
         }
+
         public Category GetById(int id)
         {
             if (id == 0)
@@ -31,7 +44,7 @@ namespace ApplicationCore.Services
                 return null;
             }
 
-            return  _repository.GetById(id);
+            return _repository.GetById(id);
 
         }
     }

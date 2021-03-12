@@ -20,24 +20,43 @@ namespace ApplicationCore.Services
 
         public IEnumerable<Product> GetAllProduct()
         {
-            var products = _repository.ListAll("spGetAllProducts").ToList();
-
-            if (products == null)
+            List<Product> products = new List<Product>();
+            try
             {
+                 products = _repository.ListAll("spGetAllProducts").ToList();
+
+                if (products == null || products.Count==0)
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                //We can write exception in logger file.
                 return null;
             }
+           
             return products;
         }
 
         public IEnumerable<Product> GetByCategoryId(int CategoryId)
         {
-            if (CategoryId == 0)
+            List<Product> products = new List<Product>();
+            try
             {
+                if (CategoryId == 0)
+                {
+                    return null;
+                }
+                products = _repository.ListAllById(CategoryId, "spGetProductsByCategory").ToList();
+            }
+            catch(Exception ex)
+            {
+                //We can write exception in logger file.
                 return null;
             }
 
-            return _repository.ListAllById(CategoryId, "spGetProductsByCategory").ToList();
-
+            return products;
         }
 
         public Product GetById(int id)
